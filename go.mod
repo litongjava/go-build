@@ -1,3 +1,3 @@
-module package
+module build
 
 go 1.21.1

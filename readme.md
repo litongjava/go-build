@@ -1,15 +1,30 @@
-# go-deploy
+# go-build
 
-## 问题描述
-我的windows平台的一个部署脚本内容如下,fly deploy用于将应用部署到flyio平台
+## 简介
+build 是一个工程构建工具,用于完成复杂的工程构建和打包工作,支持windows,linux and macos
+## 配置文件示例
+.build.txt
 ```
+[win.env]
 set JAVA_HOME=D:\java\jdk1.8.0_121
-mvn clean package -DskipTests -Pproduction
-fly deploy
-```
 
-但是运行过程中遇到了一个非常奇怪的问题mvn clean package -DskipTests -Pproduction命令执行成功后fly deploy没有执行  
-原因是是mvn命令虽然执行成功了,但是并没有返回标准的执行成功的指令
+[win.build]
+mvn clean package -DskipTests -Pproduction
+
+[mac.env]
+export JAVA_HOME=~/java/jdk1.8.0_121
+
+[mac.build]
+mvn clean package -DskipTests -Pproduction
+
+[linux.env]
+export JAVA_HOME=~/usr/java/jdk1.8.0_121
+
+[linux.build]
+mvn clean package -DskipTests -Pproduction
+```
+## 问题描述
+在开发工程中遇到的一个问题是工程构建,不同的操作系统,不同的代码语言,不同的项目管理工具有不同的构建命令
 
 ## 解决办法
 - 1.将命令放到文件中
@@ -17,11 +32,11 @@ fly deploy
 - 3.处理一下环境变量和执行错误的情况
 
 ## 如何使用
-已经开发完成,开源地址https://github.com/litongjava/go-deploy
-- 下载https://github.com/litongjava/go-deploy/releases/tag/v1.0.0
-- 将deploy.exe 添加到PATH目录,笔者是d:\bin
-- 添加deploy-win.txt笔者的内容如下
-- 执行deploy . 命令进行部署
+已经开发完成,开源地址https://github.com/litongjava/go-build
+- 下载https://github.com/litongjava/go-build/releases/tag/v1.0.0
+- 将build.exe 添加到PATH目录,笔者是d:\bin
+- 添加build-win.txt笔者的内容如下
+- 执行build . 命令进行部署
 
 ## 支持的平台
 目前仅仅支持windows平台,没有必要支持linux和macos,它们的shell script脚本已经足够好用
@@ -31,22 +46,22 @@ fly deploy
 
 ## how to use
 
-deploy-prod.txt
+build-prod.txt
 ```text
 set JAVA_HOME=D:\java\jdk1.8.0_121
-mvn clean package -DskipTests -Pproduction
-fly deploy
+mvn clean build -DskipTests -Pproduction
+fly build
 ```
 
 ```shell
-deploy deploy-prod.txt
+build build-prod.txt
 ```
 
 output
 ```log
-E:\code\project\imaginix\imaginix-kimi-service-monitoring>deploy .
+E:\code\project\imaginix\imaginix-kimi-service-monitoring>build .
 2024/03/06 23:59:30.981964 main.go:49: add env variable: JAVA_HOME=D:\java\jdk1.8.0_121
-2024/03/06 23:59:31.002341 main.go:63: Executing in . : mvn clean package -DskipTests -Pproduction
+2024/03/06 23:59:31.002341 main.go:63: Executing in . : mvn clean build -DskipTests -Pproduction
 [INFO] Scanning for projects...
 [INFO]
 [INFO] -----------< com.imaginix:imaginix-kimi-service-monitoring >------------
@@ -78,15 +93,15 @@ E:\code\project\imaginix\imaginix-kimi-service-monitoring>deploy .
 [INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ imaginix-kimi-service-monitoring ---
 [INFO] Building jar: E:\code\project\imaginix\imaginix-kimi-service-monitoring\target\imaginix-kimi-service-monitoring-1.0.0.jar
 [INFO]
-[INFO] --- spring-boot-maven-plugin:2.7.4:repackage (default) @ imaginix-kimi-service-monitoring ---
-[INFO] Replacing main artifact with repackaged archive
+[INFO] --- spring-boot-maven-plugin:2.7.4:rebuild (default) @ imaginix-kimi-service-monitoring ---
+[INFO] Replacing main artifact with rebuildd archive
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
 [INFO] Total time:  3.354 s
 [INFO] Finished at: 2024-03-06T23:59:35-10:00
 [INFO] ------------------------------------------------------------------------
-2024/03/06 23:59:35.386504 main.go:63: Executing in . : fly deploy
+2024/03/06 23:59:35.386504 main.go:63: Executing in . : fly build
 ==> Verifying app config
 Validating E:\code\project\imaginix\imaginix-kimi-service-monitoring\fly.toml
 ✓ Configuration is valid
@@ -112,7 +127,7 @@ Remote builder fly-builder-frosty-rain-1801 ready
  => exporting to image                                                                                                                                                                                      0.0s
  => => exporting layers                                                                                                                                                                                     0.0s
  => => writing image sha256:ab2a0b2fa392e7cb1f7e4db7af99002aeb51c1a612fcbea584e58d61b7b12d0f                                                                                                                0.0s
- => => naming to registry.fly.io/imaginix-kimi-service-monitoring:deployment-01HRC5NDB2QFHVFAGKKB8RJFZE                                                                                                     0.0s
+ => => naming to registry.fly.io/imaginix-kimi-service-monitoring:buildment-01HRC5NDB2QFHVFAGKKB8RJFZE                                                                                                     0.0s
 --> Building image done
 ==> Pushing image to fly
 The push refers to repository [registry.fly.io/imaginix-kimi-service-monitoring]
@@ -120,12 +135,12 @@ The push refers to repository [registry.fly.io/imaginix-kimi-service-monitoring]
 0f5bc9e38484: Layer already exists
 08187314d29d: Layer already exists
 2b4482819176: Layer already exists
-deployment-01HRC5NDB2QFHVFAGKKB8RJFZE: digest: sha256:00f942713a6b5a8e2d02a55ec113441536b108f8c64e09f89b17566f9a0da8dd size: 1159
+buildment-01HRC5NDB2QFHVFAGKKB8RJFZE: digest: sha256:00f942713a6b5a8e2d02a55ec113441536b108f8c64e09f89b17566f9a0da8dd size: 1159
 --> Pushing image done
-image: registry.fly.io/imaginix-kimi-service-monitoring:deployment-01HRC5NDB2QFHVFAGKKB8RJFZE
+image: registry.fly.io/imaginix-kimi-service-monitoring:buildment-01HRC5NDB2QFHVFAGKKB8RJFZE
 image size: 361 MB
 
-Watch your deployment at https://fly.io/apps/imaginix-kimi-service-monitoring/monitoring
+Watch your buildment at https://fly.io/apps/imaginix-kimi-service-monitoring/monitoring
 
 Updating existing machines in 'imaginix-kimi-service-monitoring' with rolling strategy
 > Updating 32874d3df72768 [app]
@@ -140,5 +155,5 @@ Updating existing machines in 'imaginix-kimi-service-monitoring' with rolling st
 ✔ Machine 32874d3df72768 [app] update succeeded
 Checking DNS configuration for imaginix-kimi-service-monitoring.fly.dev
 
-Visit your newly deployed app at https://imaginix-kimi-service-monitoring.fly.dev/
+Visit your newly builded app at https://imaginix-kimi-service-monitoring.fly.dev/
 ```
