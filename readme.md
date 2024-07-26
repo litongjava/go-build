@@ -1,9 +1,11 @@
 # go-build
 
-## 简介
-build 是一个工程构建工具,用于完成复杂的工程构建和打包工作,支持windows,linux and macos
-## 配置文件示例
-.build.txt
+## Introduction
+`go-build` is an engineering build tool designed to handle complex engineering build and packaging tasks. It supports Windows, Linux, and macOS operating systems. The tool aims to simplify the build process across multiple platforms, making engineering builds more consistent and efficient.
+
+## Configuration File Example
+Below is an example of a configuration file `.build.txt`, which includes environment variables and build commands for different operating systems:
+
 ```
 [win.env]
 set JAVA_HOME=D:\java\jdk1.8.0_121
@@ -23,137 +25,56 @@ export JAVA_HOME=~/usr/java/jdk1.8.0_121
 [linux.build]
 mvn clean package -DskipTests -Pproduction
 ```
-## 问题描述
-在开发工程中遇到的一个问题是工程构建,不同的操作系统,不同的代码语言,不同的项目管理工具有不同的构建命令
 
-## 解决办法
-- 1.将命令放到文件中
-- 2.写一个程序,读取文件中的命令,一行一行执行
-- 3.处理一下环境变量和执行错误的情况
+## Problem Description
+In engineering development, different operating systems, programming languages, and project management tools have their own build commands, making the build process complex and error-prone.
 
-## 如何使用
-已经开发完成,开源地址https://github.com/litongjava/go-build
-- 下载https://github.com/litongjava/go-build/releases/tag/v1.0.0
-- 将build.exe 添加到PATH目录,笔者是d:\bin
-- 添加build-win.txt笔者的内容如下
-- 执行build . 命令进行部署
+## Solution
+1. Place the build commands in a configuration file.
+2. Write a program to read and execute the commands line by line.
+3. Handle environment variable settings and execution errors.
 
-## 支持的平台
-目前仅仅支持windows平台,没有必要支持linux和macos,它们的shell script脚本已经足够好用
+## How to Use
+The tool has been developed and is open source. Follow these steps to use it:
 
-## 其他
-对于其他需要命令流程的工作本工具依然适用
+1. Visit the open source repository: [go-build GitHub Repository](https://github.com/litongjava/go-build)
+2. Download the latest version: [v1.0.0 Release](https://github.com/litongjava/go-build/releases/tag/v1.0.0)
+3. Add the `build` command to your system `PATH` environment variable, e.g., `d:\bin`.
+4. Create a configuration file `build.txt` with content similar to the example above.
+5. Execute the command `build .build.txt` to build and package your project.
 
-## how to use
+## Example
+Assume your configuration file is named `.build.txt`, with the following content:
 
-build-prod.txt
-```text
+```
+[win.env]
 set JAVA_HOME=D:\java\jdk1.8.0_121
-mvn clean build -DskipTests -Pproduction
-fly build
+
+[win.build]
+mvn clean package -DskipTests -Pproduction
+
+[mac.env]
+export JAVA_HOME=~/java/jdk1.8.0_121
+
+[mac.build]
+mvn clean package -DskipTests -Pproduction
+
+[linux.env]
+export JAVA_HOME=~/usr/java/jdk1.8.0_121
+
+[linux.build]
+mvn clean package -DskipTests -Pproduction
 ```
 
-```shell
-build build-prod.txt
+You can run the following command in the command line:
+
+```sh
+build .build.txt
 ```
 
-output
-```log
-E:\code\project\imaginix\imaginix-kimi-service-monitoring>build .
-2024/03/06 23:59:30.981964 main.go:49: add env variable: JAVA_HOME=D:\java\jdk1.8.0_121
-2024/03/06 23:59:31.002341 main.go:63: Executing in . : mvn clean build -DskipTests -Pproduction
-[INFO] Scanning for projects...
-[INFO]
-[INFO] -----------< com.imaginix:imaginix-kimi-service-monitoring >------------
-[INFO] Building imaginix-kimi-service-monitoring 1.0.0
-[INFO] --------------------------------[ jar ]---------------------------------
-[INFO]
-[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ imaginix-kimi-service-monitoring ---
-[INFO] Deleting E:\code\project\imaginix\imaginix-kimi-service-monitoring\target
-[INFO]
-[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ imaginix-kimi-service-monitoring ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Copying 3 resources
-[INFO]
-[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ imaginix-kimi-service-monitoring ---
-[INFO] Changes detected - recompiling the module!
-[INFO] Compiling 10 source files to E:\code\project\imaginix\imaginix-kimi-service-monitoring\target\classes
-[INFO]
-[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ imaginix-kimi-service-monitoring ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Copying 0 resource
-[INFO]
-[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ imaginix-kimi-service-monitoring ---
-[INFO] Changes detected - recompiling the module!
-[INFO] Compiling 6 source files to E:\code\project\imaginix\imaginix-kimi-service-monitoring\target\test-classes
-[INFO]
-[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ imaginix-kimi-service-monitoring ---
-[INFO] Tests are skipped.
-[INFO]
-[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ imaginix-kimi-service-monitoring ---
-[INFO] Building jar: E:\code\project\imaginix\imaginix-kimi-service-monitoring\target\imaginix-kimi-service-monitoring-1.0.0.jar
-[INFO]
-[INFO] --- spring-boot-maven-plugin:2.7.4:rebuild (default) @ imaginix-kimi-service-monitoring ---
-[INFO] Replacing main artifact with rebuildd archive
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  3.354 s
-[INFO] Finished at: 2024-03-06T23:59:35-10:00
-[INFO] ------------------------------------------------------------------------
-2024/03/06 23:59:35.386504 main.go:63: Executing in . : fly build
-==> Verifying app config
-Validating E:\code\project\imaginix\imaginix-kimi-service-monitoring\fly.toml
-✓ Configuration is valid
---> Verified app config
-==> Building image
-Waiting for remote builder fly-builder-frosty-rain-1801...
-Remote builder fly-builder-frosty-rain-1801 ready
-Waiting for remote builder fly-builder-frosty-rain-1801...
-Remote builder fly-builder-frosty-rain-1801 ready
-==> Building image with Docker
---> docker host: 20.10.12 linux x86_64
-[+] Building 34.2s (8/8) FINISHED
- => [internal] load build definition from Dockerfile                                                                                                                                                        0.8s
- => => transferring dockerfile: 32B                                                                                                                                                                         0.8s
- => [internal] load .dockerignore                                                                                                                                                                           0.8s
- => => transferring context: 2B                                                                                                                                                                             0.8s
- => [internal] load metadata for docker.io/litongjava/jre:8u391-stable-slim                                                                                                                                 3.9s
- => [internal] load build context                                                                                                                                                                          29.1s
- => => transferring context: 9.69MB                                                                                                                                                                        29.1s
- => [1/3] FROM docker.io/litongjava/jre:8u391-stable-slim@sha256:199bf2b76a3b8ad68faf6e5c108b1de3baa49366fcba8415e836f02368b855c9                                                                           0.0s
- => CACHED [2/3] WORKDIR /app                                                                                                                                                                               0.0s
- => [3/3] COPY target/imaginix-kimi-service-monitoring-1.0.0.jar /app/                                                                                                                                      0.0s
- => exporting to image                                                                                                                                                                                      0.0s
- => => exporting layers                                                                                                                                                                                     0.0s
- => => writing image sha256:ab2a0b2fa392e7cb1f7e4db7af99002aeb51c1a612fcbea584e58d61b7b12d0f                                                                                                                0.0s
- => => naming to registry.fly.io/imaginix-kimi-service-monitoring:buildment-01HRC5NDB2QFHVFAGKKB8RJFZE                                                                                                     0.0s
---> Building image done
-==> Pushing image to fly
-The push refers to repository [registry.fly.io/imaginix-kimi-service-monitoring]
-858c1983017e: Pushed
-0f5bc9e38484: Layer already exists
-08187314d29d: Layer already exists
-2b4482819176: Layer already exists
-buildment-01HRC5NDB2QFHVFAGKKB8RJFZE: digest: sha256:00f942713a6b5a8e2d02a55ec113441536b108f8c64e09f89b17566f9a0da8dd size: 1159
---> Pushing image done
-image: registry.fly.io/imaginix-kimi-service-monitoring:buildment-01HRC5NDB2QFHVFAGKKB8RJFZE
-image size: 361 MB
+This command will read the environment variables and build commands from the configuration file, set the environment variables based on the current operating system, and execute the corresponding build commands.
 
-Watch your buildment at https://fly.io/apps/imaginix-kimi-service-monitoring/monitoring
+## Contributing
+We welcome feedback and suggestions for the `go-build` tool. You can submit issues or pull requests through GitHub.
 
-Updating existing machines in 'imaginix-kimi-service-monitoring' with rolling strategy
-> Updating 32874d3df72768 [app]
-> Updating 32874d3df72768 [app]
-> Waiting for 32874d3df72768 [app] to have state: started
-> Machine 32874d3df72768 [app] has state: started
-> Checking that 32874d3df72768 [app] is up and running
-> Waiting for 32874d3df72768 [app] to become healthy: 0/1
-
-> Waiting for 32874d3df72768 [app] to become healthy: 1/1
-
-✔ Machine 32874d3df72768 [app] update succeeded
-Checking DNS configuration for imaginix-kimi-service-monitoring.fly.dev
-
-Visit your newly builded app at https://imaginix-kimi-service-monitoring.fly.dev/
-```
+Thank you for using `go-build`. We hope it makes your development work easier and more efficient!
